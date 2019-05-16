@@ -1,0 +1,33 @@
+{
+  "name": "@fluidnext-polymer/paper-input-color",
+  "version": "1.0.0",
+  "description": "input web-component only for color, written in Polymer 3",
+  "main": "index.html",
+  "scripts": {
+    "test-safari": "polymer test -l safari",
+    "test": "polymer test -l chrome",
+    "serve": "polymer serve -o"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluidnext/paper-input-color.git"
+  },
+  "author": "Dessi Emanuele",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/fluidnext/paper-input-color/issues"
+  },
+  "homepage": "https://github.com/fluidnext/paper-input-color#readme",
+  "devDependencies": {
+    "polymer-cli": "1.9.9"
+  },
+  "dependencies": {
+    "@polymer/paper-input": "^3.0.2",
+    "@polymer/polymer": "^3.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Simone Spada"
+    }
+  ]
+}
