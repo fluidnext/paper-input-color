@@ -8,11 +8,6 @@ class PaperInputColor extends PolymerElement {
         return html`
             <style>
                 #inputColor{
-                    /*display: flex;
-                    align-self: center;
-                    width: var(--paper-input-color-width-wrapper, 160px);
-                    height: var(--paper-input-color-height-wrapper, 50px);
-                    */
                     width: var(--paper-input-color-width-wrapper, 160px);
                     text-align: center;
                 }
@@ -24,28 +19,39 @@ class PaperInputColor extends PolymerElement {
                     margin-right: 10%;
                 }
 
-                #clear {
+                .hide-button {
                     display: none;
                 }
             </style>
-            <paper-input id="inputColor" readonly="true" on-click="_onClick" value="{{value}}">
-                <div slot="prefix" prefix id="colorPreview"></div>
-                <paper-icon-button slot="suffix" suffix id="clear" icon="icons:clear" on-click="_clear"></paper-icon-button>
+            <paper-input id="inputColor" readonly="true" on-click="_onClick" value="{{stringColor}}">
+                <div slot="prefix" prefix style$="background-color: [[stringColor]]" id="colorPreview"></div>
+                <paper-icon-button id="clearButton" slot="suffix" suffix class="hide-button" icon="icons:clear" on-click="_clear"></paper-icon-button>
             </paper-input>
-            <input id="inputColorHidden" type="color" value="{{value}}">
+            <input hidden id="inputColorHidden" type="color" on-change="_onChange">
         `
     }
 
     static get properties(){
         return {
             /**
-             * `value` of hidden input
+             * `value` value of paper-input-color
              */
-            value: {
-                type: String,
-                value: null,
-                observer: `_changeValue`
+            _value: {
+                type: Object,
+                value: {}
             },
+            /**
+             * `stringColor` string with the value of hidden input type color
+             */
+            stringColor: {
+                type: String,
+                value: undefined,
+                notify: true,
+                observer: `_changeColor`
+            },
+            /**
+             * `paperValue` string value of the paper-input for value property
+             */
             paperValue: {
                 type: String,
                 value: '',
@@ -58,17 +64,73 @@ class PaperInputColor extends PolymerElement {
         super.ready();
     }
 
-    _clear(){
-        console.warn('clear');
+    /**
+     * Used for set string color at `null` to show transparent color
+     */
+    _clear(event){
+        console.warn(event);
+        this.stringColor = null;
     }
-
+    
+    /**
+     * Used to bind click from paper-input to hidden input
+     */
     _onClick(){
         this.$.inputColorHidden.click();
     }
 
-    _changeValue(newValue, old){
-        console.warn(newValue);
-        console.warn(old);
+    /**
+     * 
+     * @param {string} color
+     * Function to convert Hex value in rgb 
+     */
+    _convertColor(color) {
+        /* Check for # infront of the value, if it's there, strip it */
+
+        if (color.substring(0, 1) == '#') {
+            color = color.substring(1);
+        }
+
+        let rgbColor = {};
+
+        /* Grab each pair (channel) of hex values and parse them to ints using hexadecimal decoding */
+        rgbColor.rChannel = parseInt(color.substring(0, 2), 16);
+        rgbColor.gChannel = parseInt(color.substring(2, 4), 16);
+        rgbColor.bChannel = parseInt(color.substring(4), 16);
+
+        return rgbColor;
+    }
+
+    _onChange(value){
+        this.stringColor = value.currentTarget.value;
+        this._value = {
+            hex: this.stringColor,
+            rgb: this._convertColor(this.stringColor)
+        }
+        console.warn(this._value);
+    }
+
+    _showClearButton(){
+        this.$.clearButton.classList.remove('hide-button');
+    }
+    
+    _hideClearButton(){
+        this.$.clearButton.classList.add('hide-button');
+    }
+
+    _changeColor(oldValue, newValue){
+        if (typeof newValue === `string`) {
+            this._showClearButton();
+            return;
+        }
+        this._hideClearButton();
+    }
+
+    /**
+     * `_value` is private, for a correct use using getter function from outside 
+     */
+    getPaperInputColorValue(){
+        return this._value;
     }
 }
 
