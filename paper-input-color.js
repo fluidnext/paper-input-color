@@ -1,16 +1,82 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element';
-import '@polymer/paper-input/paper-input';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class';
+import { PaperInputBehavior } from '@polymer/paper-input/paper-input-behavior';
+import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior';
+
+// import '@polymer/paper-input/paper-input';
+import '@polymer/paper-input/paper-input-container';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/iron-icons/iron-icons';
+import '@polymer/iron-input/iron-input';
+import '@polymer/paper-input/paper-input-error';
 
-class PaperInputColor extends PolymerElement {
+class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElementBehavior], PolymerElement) {
     static get template(){
         return html`
             <style>
-                #inputColor{
-                    width: var(--paper-input-color-width-wrapper, 160px);
-                    text-align: center;
+                iron-input > input {
+                    @apply --paper-input-container-shared-input-style;
+                    font-family: inherit;
+                    font-weight: inherit;
+                    font-size: inherit;
+                    letter-spacing: inherit;
+                    word-spacing: inherit;
+                    line-height: inherit;
+                    text-shadow: inherit;
+                    color: inherit;
+                    cursor: inherit;
                 }
+
+                input:disabled {
+                    @apply --paper-input-container-input-disabled;
+                }
+
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    @apply --paper-input-container-input-webkit-spinner;
+                }
+
+                input::-webkit-clear-button {
+                    @apply --paper-input-container-input-webkit-clear;
+                }
+
+                input::-webkit-calendar-picker-indicator {
+                    @apply --paper-input-container-input-webkit-calendar-picker-indicator;
+                }
+
+                input::-webkit-input-placeholder {
+                    color: var(--paper-input-container-color, var(--secondary-text-color));
+                }
+
+                input:-moz-placeholder {
+                    color: var(--paper-input-container-color, var(--secondary-text-color));
+                }
+
+                input::-moz-placeholder {
+                    color: var(--paper-input-container-color, var(--secondary-text-color));
+                }
+
+                input::-ms-clear {
+                    @apply --paper-input-container-ms-clear;
+                }
+
+                input::-ms-reveal {
+                    @apply --paper-input-container-ms-reveal;
+                }
+
+                input:-ms-input-placeholder {
+                    color: var(--paper-input-container-color, var(--secondary-text-color));
+                }
+                label {
+                    pointer-events: none;
+                    margin-left: 25px;
+                    width: 95%;
+                }
+                iron-input{
+                    margin-left: 25px;
+                    width: 95%;
+                }
+
                 #colorPreview{
                     width: 350%;
                     height: 20px;
@@ -19,43 +85,62 @@ class PaperInputColor extends PolymerElement {
                     margin-right: 10%;
                 }
 
-                .hide-button {
+                #transparentPreview{
+                    width: 350%;
+                    height: 20px;
+                    border: 3px solid #000;
+                    border-radius: 50px;
+                    margin-right: 10%;
+
+                    background-image: url('./img/transparency.png');
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    background-size: auto;
+                }
+
+                .hide-element {
                     display: none;
                 }
             </style>
-            <paper-input id="inputColor" readonly="true" on-click="_onClick" value="{{stringColor}}">
-                <div slot="prefix" prefix style$="background-color: [[stringColor]]" id="colorPreview"></div>
-                <paper-icon-button id="clearButton" slot="suffix" suffix class="hide-button" icon="icons:clear" on-click="_clear"></paper-icon-button>
-            </paper-input>
-            <input hidden id="inputColorHidden" type="color" on-change="_onChange">
+
+            <paper-input-container on-click="_onClick">
+                <div slot="prefix" prefix style$="background-color: [[value]]" id="colorPreview" class="hide-element"></div>
+                <div slot="prefix" prefix id="transparentPreview"></div>
+
+                <label hidden$="[[!label]]" aria-hidden="true" slot="label">[[label]]</label>
+                <iron-input bind-value="{{value}}" slot="input" class="input-element" allowed-pattern="[[allowedPattern]]" invalid="{{invalid}}">
+                    <input aria-labelledby$="[[_ariaLabelledBy]]" aria-describedby$="[[_ariaDescribedBy]]" disabled$="[[disabled]]" title$="[[title]]" value$=[[value]] type="text" readonly="true" pattern$="[[pattern]]" required$="[[required]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" step$="[[step]]" name$="[[name]]" placeholder$="[[placeholder]]" list$="[[list]]" size$="[[size]]" autocapitalize$="[[autocapitalize]]" autocorrect$="[[autocorrect]]" tabindex$="[[tabIndex]]" autosave$="[[autosave]]" results$="[[results]]" accept$="[[accept]]" multiple$="[[multiple]]">
+                    <input hidden id="inputColorHidden" type="color" on-change="_onChange" value="#ffffff">
+                </iron-input>
+                
+                <paper-icon-button id="clearButton" slot="suffix" suffix class="hide-element" icon="icons:clear" on-click="_clear"></paper-icon-button>
+                <!-- <template is="dom-if" if="[[errorMessage]]">
+                    <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
+                </template> -->
+            </paper-input-container>
         `
     }
 
     static get properties(){
         return {
             /**
-             * `value` value of paper-input-color
+             *  `colorType` set what you see on the input value, default value is HEX for hexadecimal.
+             *  there are two types in _value, HEX or RGB
              */
-            _value: {
-                type: Object,
-                value: {}
+            colorType: {
+                type: String,
+                value: 'hex'
             },
             /**
-             * `stringColor` string with the value of hidden input type color
+             * `value` of the element
              */
-            stringColor: {
+            value: {
                 type: String,
-                value: undefined,
-                notify: true,
-                observer: `_changeColor`
-            },
-            /**
-             * `paperValue` string value of the paper-input for value property
-             */
-            paperValue: {
-                type: String,
-                value: '',
                 notify: true
+            },
+            label: {
+                type: String,
+                value: 'Select Color'
             }
         }
     }
@@ -68,8 +153,9 @@ class PaperInputColor extends PolymerElement {
      * Used for set string color at `null` to show transparent color
      */
     _clear(event){
-        console.warn(event);
-        this.stringColor = null;
+        event.stopPropagation()
+        this.value = null;
+        this._hideElement();
     }
     
     /**
@@ -91,46 +177,27 @@ class PaperInputColor extends PolymerElement {
             color = color.substring(1);
         }
 
-        let rgbColor = {};
-
-        /* Grab each pair (channel) of hex values and parse them to ints using hexadecimal decoding */
-        rgbColor.rChannel = parseInt(color.substring(0, 2), 16);
-        rgbColor.gChannel = parseInt(color.substring(2, 4), 16);
-        rgbColor.bChannel = parseInt(color.substring(4), 16);
-
-        return rgbColor;
+        return `rgb(${parseInt(color.substring(0, 2), 16)}, ${parseInt(color.substring(2, 4), 16)}, ${parseInt(color.substring(4), 16)})`;
     }
 
     _onChange(value){
-        this.stringColor = value.currentTarget.value;
-        this._value = {
-            hex: this.stringColor,
-            rgb: this._convertColor(this.stringColor)
-        }
-        console.warn(this._value);
-    }
-
-    _showClearButton(){
-        this.$.clearButton.classList.remove('hide-button');
-    }
-    
-    _hideClearButton(){
-        this.$.clearButton.classList.add('hide-button');
-    }
-
-    _changeColor(oldValue, newValue){
-        if (typeof newValue === `string`) {
-            this._showClearButton();
+        if (this.value === null) {
             return;
         }
-        this._hideClearButton();
+        this.value = this.colorType === 'hex' ? value.currentTarget.value : this._convertColor(value.currentTarget.value);
+        this._showElement();
     }
 
-    /**
-     * `_value` is private, for a correct use using getter function from outside 
-     */
-    getPaperInputColorValue(){
-        return this._value;
+    _showElement(){
+        this.$.clearButton.classList.remove('hide-element');
+        this.$.transparentPreview.classList.add('hide-element');
+        this.$.colorPreview.classList.remove('hide-element');
+    }
+    
+    _hideElement(){
+        this.$.clearButton.classList.add('hide-element');
+        this.$.transparentPreview.classList.remove('hide-element');
+        this.$.colorPreview.classList.add('hide-element');
     }
 }
 
