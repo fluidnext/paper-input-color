@@ -3,7 +3,6 @@ import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class';
 import { PaperInputBehavior } from '@polymer/paper-input/paper-input-behavior';
 import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior';
 
-// import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-input-container';
 import '@polymer/paper-icon-button/paper-icon-button';
 import '@polymer/iron-icons/iron-icons';
@@ -67,11 +66,13 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 input:-ms-input-placeholder {
                     color: var(--paper-input-container-color, var(--secondary-text-color));
                 }
+
                 label {
                     pointer-events: none;
                     margin-left: 25px;
                     width: 95%;
                 }
+
                 iron-input{
                     margin-left: 25px;
                     width: 95%;
@@ -98,6 +99,11 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                     background-size: auto;
                 }
 
+                #clearButton{
+                    padding: 0;
+                    height: 30px;
+                }
+
                 .hide-element {
                     display: none;
                 }
@@ -109,7 +115,8 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
                 <label hidden$="[[!label]]" aria-hidden="true" slot="label">[[label]]</label>
                 <iron-input bind-value="{{value}}" slot="input" class="input-element" allowed-pattern="[[allowedPattern]]" invalid="{{invalid}}">
-                    <input aria-labelledby$="[[_ariaLabelledBy]]" aria-describedby$="[[_ariaDescribedBy]]" disabled$="[[disabled]]" title$="[[title]]" value$=[[value]] type="text" readonly="true" pattern$="[[pattern]]" required$="[[required]]" autocomplete$="[[autocomplete]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" step$="[[step]]" name$="[[name]]" placeholder$="[[placeholder]]" list$="[[list]]" size$="[[size]]" autocapitalize$="[[autocapitalize]]" autocorrect$="[[autocorrect]]" tabindex$="[[tabIndex]]" autosave$="[[autosave]]" results$="[[results]]" accept$="[[accept]]" multiple$="[[multiple]]">
+                    <!-- list$="[[list]]" -->
+                    <input type="text" readonly="true" aria-labelledby$="[[_ariaLabelledBy]]" aria-describedby$="[[_ariaDescribedBy]]" disabled$="[[disabled]]" title$="[[title]]" value$=[[value]] required$="[[required]]" inputmode$="[[inputmode]]" name$="[[name]]" autocapitalize$="[[autocapitalize]]" autocorrect$="[[autocorrect]]" tabindex$="[[tabIndex]]" autosave$="[[autosave]]" results$="[[results]]" accept$="[[accept]]">
                     <input hidden id="inputColorHidden" type="color" on-change="_onChange" value="#ffffff">
                 </iron-input>
                 
@@ -124,23 +131,57 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     static get properties(){
         return {
             /**
-             *  `colorType` set what you see on the input value, default value is HEX for hexadecimal.
-             *  there are two types in _value, HEX or RGB
+             *  `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
+             *  there are two possibility, HEX or RGB
              */
             colorType: {
                 type: String,
                 value: 'hex'
             },
             /**
-             * `value` of the element
+             * `value` Value of the element, could be '#ffffff'(hex) or 'rgb(100,100,100)'(rgb) 
              */
             value: {
                 type: String,
                 notify: true
             },
+            /**
+             * `label` Text to display as the input label
+             */
             label: {
                 type: String,
                 value: 'Select Color'
+            },
+            /**
+             * `invalid` Value for the input text
+             */
+            invalid: {
+                type: Boolean
+            },
+            /**
+             * `disabled` Value for the input text
+             */
+            disabled:{
+                type: Boolean,
+                value: false
+            },
+            /**
+             * `required` Value for the input text
+             */
+            required: {
+                type: Boolean
+            },
+            /**
+            * `title` Value for the input text
+            */
+            title: {
+                type: String
+            },
+            /**
+            * `name` Value for the input text
+            */
+            name: {
+                type: String
             }
         }
     }
