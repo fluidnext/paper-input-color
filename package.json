@@ -12,6 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/fluidnext/paper-input-color.git"
   },
+  "keywords": [
+    "polymer 3",
+    "web component",
+    "html5"
+  ],
   "author": "Dessi Emanuele",
   "license": "BSD-3-Clause",
   "bugs": {
@@ -19,7 +24,16 @@
   },
   "homepage": "https://github.com/fluidnext/paper-input-color#readme",
   "devDependencies": {
+    "coveralls": "^3.0.3",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "polymer-cli": "1.9.9",
+    "mocha-lcov-reporter": "^1.3.0",
+    "wct-istanbul": "^0.14.3",
+    "wct-mocha": "^1.0.0",
+    "@webcomponents/webcomponentsjs": "^2.2.10",
+    "web-component-tester": "^6.9.2",
+    "@polymer/test-fixture": "^4.0.2",
     "@polymer/iron-demo-helpers": "^3.1.0"
   },
   "dependencies": {

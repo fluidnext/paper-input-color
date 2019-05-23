@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script type="module" src="../paper-input-color.js"></script>
+</head>
+
+<body>
+
+    <test-fixture id="initAutocompleteDefaultValue">
+        <template>
+            <paper-input-color></paper-input-color>
+        </template>
+    </test-fixture>
+
+    <script>
+        suite('testingValueAttribute', function () {
+            // in this test, look if the all attributes are init currectly
+            test('initAutocompleteDefaultValue', function () {
+                var element = fixture('initAutocompleteDefaultValue');
+                console.warn(element);
+                //Default Value
+                assert.equal(element.invalid, false); //paper-input attribute
+                assert.equal(element.required, false); //paper-input attribute
+                assert.equal(element.disabled, false); //paper-input attribute
+                assert.equal(element.colorType, 'hex');
+                assert.equal(element.label, 'Select Color');
+            });
+        });
+    </script>
+</body>
+
+</html>

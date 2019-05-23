@@ -156,7 +156,8 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
              * `invalid` Value for the input text
              */
             invalid: {
-                type: Boolean
+                type: Boolean,
+                value: false
             },
             /**
              * `disabled` Value for the input text
@@ -169,7 +170,8 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
              * `required` Value for the input text
              */
             required: {
-                type: Boolean
+                type: Boolean,
+                value:false
             },
             /**
             * `title` Value for the input text
