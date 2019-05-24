@@ -67,31 +67,20 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                     color: var(--paper-input-container-color, var(--secondary-text-color));
                 }
 
-                label {
-                    pointer-events: none;
-                    margin-left: 25px;
-                    width: 95%;
-                }
-
-                iron-input{
-                    margin-left: 25px;
-                    width: 95%;
-                }
-
                 #colorPreview{
-                    width: 350%;
+                    width: 20px;
                     height: 20px;
                     border: 3px solid #000;
                     border-radius: 50px;
-                    margin-right: 10%;
+                    margin-right: 10px;
                 }
 
                 #transparentPreview{
-                    width: 350%;
+                    width: 20px;
                     height: 20px;
                     border: 3px solid #000;
                     border-radius: 50px;
-                    margin-right: 10%;
+                    margin-right: 10px;
 
                     background-image: url('./img/transparency.png');
                     background-repeat: no-repeat;
@@ -113,17 +102,18 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 <div slot="prefix" prefix style$="background-color: [[value]]" id="colorPreview" class="hide-element"></div>
                 <div slot="prefix" prefix id="transparentPreview"></div>
 
-                <label hidden$="[[!label]]" aria-hidden="true" slot="label">[[label]]</label>
-                <iron-input bind-value="{{value}}" slot="input" class="input-element" allowed-pattern="[[allowedPattern]]" invalid="{{invalid}}">
-                    <!-- list$="[[list]]" -->
-                    <input type="text" readonly="true" aria-labelledby$="[[_ariaLabelledBy]]" aria-describedby$="[[_ariaDescribedBy]]" disabled$="[[disabled]]" title$="[[title]]" value$=[[value]] required$="[[required]]" inputmode$="[[inputmode]]" name$="[[name]]" autocapitalize$="[[autocapitalize]]" autocorrect$="[[autocorrect]]" tabindex$="[[tabIndex]]" autosave$="[[autosave]]" results$="[[results]]" accept$="[[accept]]">
-                    <input hidden id="inputColorHidden" type="color" on-change="_onChange" value="#ffffff">
+                <label hidden$="[[!label]]" slot="label" aria-hidden="true">[[label]]</label>
+                
+                <iron-input bind-value="{{value}}" invalid="{{invalid}}">
+                    <input hidden id="inputColorHidden" type="color" on-change="_onChange">
                 </iron-input>
                 
+                <div slot="input">[[value]]</div>
+                
                 <paper-icon-button id="clearButton" slot="suffix" suffix class="hide-element" icon="icons:clear" on-click="_clear"></paper-icon-button>
-                <!-- <template is="dom-if" if="[[errorMessage]]">
+                <template is="dom-if" if="[[errorMessage]]">
                     <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
-                </template> -->
+                </template>
             </paper-input-container>
         `
     }
@@ -143,7 +133,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
              */
             value: {
                 type: String,
-                notify: true
+                notify: true,
+                value: null,
+                observer: '_onChangeValue'
             },
             /**
              * `label` Text to display as the input label
@@ -215,19 +207,23 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      */
     _convertColor(color) {
         /* Check for # infront of the value, if it's there, strip it */
-
         if (color.substring(0, 1) == '#') {
             color = color.substring(1);
+        }else{
+            return color;
         }
-
         return `rgb(${parseInt(color.substring(0, 2), 16)}, ${parseInt(color.substring(2, 4), 16)}, ${parseInt(color.substring(4), 16)})`;
     }
 
-    _onChange(value){
+    /**
+     * 
+     * @param {String} value Value from attribute, set in element
+     */
+    _onChangeValue(value){
         if (this.value === null) {
             return;
         }
-        this.value = this.colorType === 'hex' ? value.currentTarget.value : this._convertColor(value.currentTarget.value);
+        this.value = this.colorType === 'hex' ? value : this._convertColor(value);
         this._showElement();
     }
 

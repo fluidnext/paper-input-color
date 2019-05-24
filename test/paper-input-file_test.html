@@ -13,18 +13,29 @@
 
 <body>
 
-    <test-fixture id="initAutocompleteDefaultValue">
+    <test-fixture id="initDefaultValue">
+        <template>
+            <paper-input-color></paper-input-color>
+        </template>
+    </test-fixture>
+    
+    <test-fixture id="setValue">
+        <template>
+            <paper-input-color value="#ffffff" color-type="rgb"></paper-input-color>
+        </template>
+    </test-fixture>
+    
+    <test-fixture id="changeValue">
         <template>
             <paper-input-color></paper-input-color>
         </template>
     </test-fixture>
 
     <script>
-        suite('testingValueAttribute', function () {
+        suite('testingAttribute', function () {
             // in this test, look if the all attributes are init currectly
-            test('initAutocompleteDefaultValue', function () {
-                var element = fixture('initAutocompleteDefaultValue');
-                console.warn(element);
+            test('initDefaultValue', function () {
+                var element = fixture('initDefaultValue');
                 //Default Value
                 assert.equal(element.invalid, false); //paper-input attribute
                 assert.equal(element.required, false); //paper-input attribute
@@ -32,6 +43,18 @@
                 assert.equal(element.colorType, 'hex');
                 assert.equal(element.label, 'Select Color');
             });
+            
+            test('setValue', function () {
+                var element = fixture('setValue');
+                // Value set in attribute
+                assert.equal(element.colorType, 'rgb');
+                assert.equal(element.value, 'rgb(255, 255, 255)');
+            });
+            
+            // test('changeValue', function () {
+            //     var element = fixture('changeValue');
+            //     console.warn(element);
+            // });
         });
     </script>
 </body>
