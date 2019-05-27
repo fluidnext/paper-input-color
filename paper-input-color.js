@@ -125,6 +125,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     static get properties(){
         return {
+            /**
+             * `_opened` Status for the color picker, when the user click the paper-input-color, set the variable true.
+             */
             _opened: {
                 type: Boolean,
                 value: false
