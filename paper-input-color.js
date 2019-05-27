@@ -96,8 +96,10 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 .hide-element {
                     display: none;
                 }
-                @apply --paper-input-container-label {
-                    transform: translateY(-8px);
+                label{
+                    --paper-input-container-label: {
+                        transform: translateY(-8px);
+                    }
                 }
             </style>
 
@@ -123,6 +125,10 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     static get properties(){
         return {
+            _opened: {
+                type: Boolean,
+                value: false
+            },
             /**
              *  `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
              *  there are two possibility, HEX or RGB
@@ -201,6 +207,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      */
     _onClick(){
         this.$.inputColorHidden.click();
+        this._opened = true;
     }
 
     /**
@@ -223,7 +230,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @param {String} value Value from attribute, set in element
      */
     _onChangeValue(value){
-        if (value === null) {
+        if (value === null || this._opened === false) {
+            this._opened = false;
+            this.value = null;
             return;
         }
         this.value = this.colorType === 'hex' ? value : this._convertColor(value);
