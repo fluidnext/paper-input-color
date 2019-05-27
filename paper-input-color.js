@@ -96,6 +96,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 .hide-element {
                     display: none;
                 }
+                @apply --paper-input-container-label {
+                    transform: translateY(-8px);
+                }
             </style>
 
             <paper-input-container on-click="_onClick">
@@ -220,7 +223,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @param {String} value Value from attribute, set in element
      */
     _onChangeValue(value){
-        if (this.value === null) {
+        if (value === null) {
             return;
         }
         this.value = this.colorType === 'hex' ? value : this._convertColor(value);

@@ -30,10 +30,16 @@
             <paper-input-color></paper-input-color>
         </template>
     </test-fixture>
+    
+    <test-fixture id="clearInput">
+        <template>
+            <paper-input-color value="#ffffff"></paper-input-color>
+        </template>
+    </test-fixture>
 
     <script>
         suite('testingAttribute', function () {
-            // in this test, look if the all attributes are init currectly
+            
             test('initDefaultValue', function () {
                 var element = fixture('initDefaultValue');
                 //Default Value
@@ -51,10 +57,35 @@
                 assert.equal(element.value, 'rgb(255, 255, 255)');
             });
             
-            // test('changeValue', function () {
-            //     var element = fixture('changeValue');
-            //     console.warn(element);
-            // });
+            test('changeValue', function () {
+                var element = fixture('changeValue');
+                let changeEvt = new CustomEvent('change', {
+                    detail:{
+                        value: '#ff3a1e'
+                    }
+                });
+
+                element.addEventListener('change', function (evt) {
+                    element._onChangeValue(evt.detail.sourceEvent.detail.value);
+                    setTimeout(function(){
+                        assert.equal(element.value, '#ff3a1e');
+                    }, 500)
+                });
+
+                element._onClick();
+                element.$.inputColorHidden.dispatchEvent(changeEvt);
+            });
+            
+            test('clearInput', function () {
+                var element = fixture('clearInput');
+                let clickEvt = new Event('click');
+                
+                assert.equal(element.value, '#ffffff');
+
+                element.$.clearButton.dispatchEvent(clickEvt);
+
+                assert.equal(element.value, null)
+            });
         });
     </script>
 </body>
