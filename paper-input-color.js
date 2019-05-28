@@ -2,9 +2,10 @@ import { html, PolymerElement } from '@polymer/polymer/polymer-element';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class';
 import { PaperInputBehavior } from '@polymer/paper-input/paper-input-behavior';
 import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior';
-
+// TODO REMOVE
+import '@polymer/paper-input/paper-input';
 import '@polymer/paper-input/paper-input-container';
-import '@polymer/paper-icon-button/paper-icon-button';
+import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-input/iron-input';
 import '@polymer/paper-input/paper-input-error';
@@ -66,56 +67,37 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 input:-ms-input-placeholder {
                     color: var(--paper-input-container-color, var(--secondary-text-color));
                 }
-
-                #colorPreview{
-                    width: 20px;
-                    height: 20px;
-                    border: 3px solid #000;
-                    border-radius: 50px;
-                    margin-right: 10px;
-                }
-
-                #transparentPreview{
-                    width: 20px;
-                    height: 20px;
-                    border: 3px solid #000;
-                    border-radius: 50px;
-                    margin-right: 10px;
-
-                    background-image: url('./img/transparency.png');
-                    background-repeat: no-repeat;
-                    background-position: center center;
-                    background-size: auto;
-                }
-
-                #clearButton{
-                    padding: 0;
-                    height: 30px;
-                }
-
-                .hide-element {
+                
+                [hidden] {
                     display: none;
                 }
-                label{
-                    --paper-input-container-label: {
-                        transform: translateY(-8px);
-                    }
+                
+                paper-input-container {
+                   --paper-input-prefix : {
+                        width: 16px;
+                        height: 16px;
+                        border: 2px solid #000;
+                        border-radius: 50px;
+                        margin-right: 10px;
+                        cursor: pointer;
+                        background-repeat: no-repeat;
+                        background-position: center center;
+                        background-size: auto;
+                   }
                 }
             </style>
 
-            <paper-input-container on-click="_onClick">
-                <div slot="prefix" prefix style$="background-color: [[value]]" id="colorPreview" class="hide-element"></div>
-                <div slot="prefix" prefix id="transparentPreview"></div>
+            <paper-input-container>
+                <div id="colorPreview"  slot="prefix" prefix on-click="_onClick"></div>
 
                 <label hidden$="[[!label]]" slot="label" aria-hidden="true">[[label]]</label>
                 
-                <iron-input bind-value="{{value}}" invalid="{{invalid}}">
-                    <input hidden id="inputColorHidden" type="color" on-change="_onChange">
+                <iron-input bind-value="{{value}}" invalid="{{invalid}}" slot="input" disabled>
+                    <input type="text" disabled>
                 </iron-input>
+                <input hidden id="inputColorHidden" type="color" on-input="_onChangeInputColorValue">  
                 
-                <div slot="input">[[value]]</div>
-                
-                <paper-icon-button id="clearButton" slot="suffix" suffix class="hide-element" icon="icons:clear" on-click="_clear"></paper-icon-button>
+                <iron-icon id="clearButton" slot="suffix" suffix class="hide-element" icon="icons:clear" on-click="_clear"></iron-icon>
                 <template is="dom-if" if="[[errorMessage]]">
                     <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
                 </template>
@@ -125,13 +107,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     static get properties(){
         return {
-            /**
-             * `_opened` Status for the color picker, when the user click the paper-input-color, set the variable true.
-             */
-            _opened: {
-                type: Boolean,
-                value: false
-            },
+
             /**
              *  `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
              *  there are two possibility, HEX or RGB
@@ -141,7 +117,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 value: 'hex'
             },
             /**
-             * `value` Value of the element, could be '#ffffff'(hex) or 'rgb(100,100,100)'(rgb) 
+             * `value` Value of the element, could be '#ffffff'(hex) or 'rgb(100,100,100)'(rgb)
              */
             value: {
                 type: String,
@@ -153,8 +129,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
              * `label` Text to display as the input label
              */
             label: {
-                type: String,
-                value: 'Select Color'
+                type: String
             },
             /**
              * `invalid` Value for the input text
@@ -200,23 +175,35 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * Used for set string color at `null` to show transparent color
      */
     _clear(event){
-        event.stopPropagation()
+        event.stopPropagation();
         this.value = null;
         this._hideElement();
     }
-    
+
     /**
      * Used to bind click from paper-input to hidden input
      */
     _onClick(){
         this.$.inputColorHidden.click();
-        this._opened = true;
     }
 
     /**
-     * 
+     * @param newValue
+     * @private
+     */
+    _onChangeValue(newValue){
+        if (!newValue) {
+            this._hideElement();
+            return;
+        }
+
+        this._showElement();
+    }
+
+    /**
+     *
      * @param {string} color
-     * Function to convert Hex value in rgb 
+     * Function to convert Hex value in rgb
      */
     _convertColor(color) {
         /* Check for # infront of the value, if it's there, strip it */
@@ -229,29 +216,22 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * 
-     * @param {String} value Value from attribute, set in element
+     *
+     * @param {Event} evt
      */
-    _onChangeValue(value){
-        if (value === null || this._opened === false) {
-            this._opened = false;
-            this.value = null;
-            return;
-        }
-        this.value = this.colorType === 'hex' ? value : this._convertColor(value);
+    _onChangeInputColorValue(evt){
+        this.value = this.colorType === 'hex' ? evt.target.value : this._convertColor(evt.target.value);
         this._showElement();
     }
 
     _showElement(){
-        this.$.clearButton.classList.remove('hide-element');
-        this.$.transparentPreview.classList.add('hide-element');
-        this.$.colorPreview.classList.remove('hide-element');
+        this.$.clearButton.removeAttribute('hidden');
+        this.$.colorPreview.style.cssText = `background-color: ${this.value};`
     }
-    
+
     _hideElement(){
-        this.$.clearButton.classList.add('hide-element');
-        this.$.transparentPreview.classList.remove('hide-element');
-        this.$.colorPreview.classList.add('hide-element');
+        this.$.clearButton.setAttribute('hidden', null);
+        this.$.colorPreview.style.cssText = `background-image: url('./img/transparency.png');`
     }
 }
 
