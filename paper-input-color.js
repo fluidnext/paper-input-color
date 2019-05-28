@@ -169,6 +169,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     ready() {
         super.ready();
+        if (this.value ) {
+            this.value = this._convertColor(this.value);
+        }
     }
 
     /**
