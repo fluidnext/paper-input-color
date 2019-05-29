@@ -84,6 +84,12 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                         background-size: auto;
                    }
                 }
+                
+                paper-input-container {
+                   --paper-input-suffix : {
+                        cursor: pointer;
+                   }
+                }
             </style>
 
             <paper-input-container>
