@@ -2,11 +2,12 @@
   "name": "@fluidnext-polymer/paper-input-color",
   "version": "1.0.0",
   "description": "input web-component only for color, written in Polymer 3",
-  "main": "index.html",
   "scripts": {
-    "test-safari": "polymer test -l safari",
-    "test": "polymer test -l chrome",
-    "serve": "polymer serve -o"
+    "test": "polymer test",
+    "testSafari": "polymer test -l safari",
+    "testChrome": "polymer test -l chrome",
+    "serve": "polymer serve",
+    "demo": "polymer serve --open"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,12 @@
     "url": "https://github.com/fluidnext/paper-input-color/issues"
   },
   "homepage": "https://github.com/fluidnext/paper-input-color#readme",
+  "main": "paper-input-color.js",
   "devDependencies": {
     "coveralls": "^3.0.3",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "eslint": "^5.16.0",
     "polymer-cli": "1.9.9",
     "mocha-lcov-reporter": "^1.3.0",
     "wct-istanbul": "^0.14.3",
