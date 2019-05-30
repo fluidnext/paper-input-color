@@ -1,3 +1,7 @@
+[![npm version](https://badge.fury.io/js/%40fluidnext-polymer%2Fpaper-input-color.svg)](https://badge.fury.io/js/%40fluidnext-polymer%2Fpaper-input-color)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@fluidnext-polymer/paper-input-color)
+
+
 # Paper Input Color
 
 Is a [Polymer 3](https://polymer-library.polymer-project.org/3.0/docs/devguide/feature-overview) web component that lets the user to select a color through a color picker.
