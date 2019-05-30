@@ -18,7 +18,10 @@
     "web component",
     "html5"
   ],
-  "author": "Dessi Emanuele",
+  "author": {
+    "name": "Dessi Emanuele",
+    "url": "https://github.com/EmanueleDessi"
+  },
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/fluidnext/paper-input-color/issues"
@@ -48,7 +51,12 @@
   },
   "contributors": [
     {
-      "name": "Simone Spada"
+      "name": "Simone Spada",
+      "url": "https://github.com/SimoneSpada"
+    },
+    {
+      "name": "Antonio Visalli",
+      "url": "https://github.com/visa4fluid"
     }
   ]
 }
