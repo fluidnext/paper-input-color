@@ -42,15 +42,6 @@ class SampleElement extends PolymerElement {
 customElements.define('sample-element', SampleElement);
 ```
 
-#### Custome Style, from outside TODO
-Find some test on the various demo file.
-
-**_--paper-autocomplete-main-color_**: Color for autocomplete details (border & icons).  
-**_--paper-input-font-color_**: Font color only for input value.  
-**_--paper-suggestions-color_**: Font color for item suggestions.  
-**_--suggestions-item-min-height_**: Min heigth for item suggestions.  
-**_--paper-autocomplete-min-height_**: Min heigth for the autocomplete, that wrap also the suggestions.
-
 ## Contributing
 If you want to send a PR to this element, here are
 the instructions for running the tests and demo locally:
