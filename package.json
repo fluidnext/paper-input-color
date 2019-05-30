@@ -1,7 +1,7 @@
 {
   "name": "@fluidnext-polymer/paper-input-color",
-  "version": "1.0.0",
-  "description": "input web-component only for color, written in Polymer 3",
+  "version": "3.0.0",
+  "description": "Paper Input Color",
   "scripts": {
     "test": "polymer test",
     "testSafari": "polymer test -l safari",
