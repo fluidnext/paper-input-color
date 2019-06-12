@@ -87,22 +87,22 @@ jobs:
         #  name: Publish release on NPM
           #command: npm publish --loglevel verbose --tag @fluidnext-polymer/paper-input-color@$CIRCLE_TAG --access public
 
-workflows:
-  version: 2
-  continuous-delivery-workflow:
-    jobs:
-      - test:
+#workflows:
+ # version: 2
+  #continuous-delivery-workflow:
+   # jobs:
+    #  - test:
          # filters:
            # branches:
            #   ignore: /.*/
            # tags:
            #   only: /.*/
-      - deploy:
-          context: deploy
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /.*/
+     # - deploy:
+      #    context: deploy
+       #   requires:
+        #    - test
+         # filters:
+          #  branches:
+           #   ignore: /.*/
+            #tags:
+             # only: /.*/
