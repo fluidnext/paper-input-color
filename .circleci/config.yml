@@ -12,12 +12,13 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      # Checkout project
       - checkout
 
-      #Cazzo é?
+      # TODO controll comment
       # Download and cache dependencies
       - restore_cache:
-          keys:
+          keys: - checkout
             - v1-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
@@ -59,6 +60,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      # Checkout project
+      - checkout
 
       # Install npm
       - run: npm install
