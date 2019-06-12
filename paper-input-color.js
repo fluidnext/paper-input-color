@@ -2,8 +2,7 @@ import { html, PolymerElement } from '@polymer/polymer/polymer-element';
 import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class';
 import { PaperInputBehavior } from '@polymer/paper-input/paper-input-behavior';
 import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior';
-// TODO REMOVE
-import '@polymer/paper-input/paper-input';
+
 import '@polymer/paper-input/paper-input-container';
 import '@polymer/iron-icon/iron-icon';
 import '@polymer/iron-icons/iron-icons';
