@@ -88,6 +88,7 @@ workflows:
   version: 2
   continuous-delivery-workflow:
     jobs:
+      context: deploy
       - test:
           filters:
             branches:
