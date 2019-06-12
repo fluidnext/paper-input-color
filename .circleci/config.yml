@@ -8,13 +8,6 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:11.8.0-stretch-browsers
-    environment:
-      CI_PULL_REQUEST: "service_pull_request"
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
 
@@ -59,12 +52,22 @@ jobs:
           command: |
             npm run testChrome
   deploy:
+    docker:
+        # specify the version you desire here
+      - image: circleci/node:11.8.0-stretch-browsers
+
+    working_directory: ~/repo
+
     steps:
 
+      # Install npm
+      - run: npm install
+
+      # Create the npmrc to authenticate to npm
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
-      
+
       # View token
       - run:
           name: View token
@@ -76,11 +79,11 @@ jobs:
           command: npm publish $CIRCLE_TAG
 
       # Push Coverage Data
-      - run: 
+      - run:
           name: Push coverage data
           command: |
             cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
-      
+
 workflows:
   version: 2
   continuous-delivery-workflow:
