@@ -1,6 +1,6 @@
 {
   "name": "@fluidnext-polymer/paper-input-color",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Paper Input Color",
   "scripts": {
     "test": "polymer test",
