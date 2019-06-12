@@ -1,7 +1,6 @@
 {
-    "npm": true,
     "suites": [
-        "test/paper-input-file_test.html"
+        "test/paper-input-color_test.html"
     ],
     "plugins": {
         "istanbul": {
