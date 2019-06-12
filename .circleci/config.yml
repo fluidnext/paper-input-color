@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:10.8.0-stretch-browsers
+      - image: circleci/node:11.8.0-stretch-browsers
     environment:
       CI_PULL_REQUEST: "service_pull_request"
 
@@ -56,6 +56,6 @@ jobs:
       - run: 
           name: Testing a component on Browsers
           command: |
-            npm run test
+            npm run testChrome
 
       - run: echo 'Test Completati'
