@@ -88,7 +88,6 @@ workflows:
   version: 2
   continuous-delivery-workflow:
     jobs:
-      context: deploy
       - test:
           filters:
             branches:
@@ -96,6 +95,7 @@ workflows:
             tags:
               only: /.*/
       - deploy:
+          context: deploy
           requires:
             - test
           filters:
