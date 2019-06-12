@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  test:
     docker:
       # specify the version you desire here
       - image: circleci/node:11.8.0-stretch-browsers
@@ -69,40 +69,32 @@ jobs:
       # Checkout project
       - checkout
 
-      # Install npm
-      - run: npm install
-
       # Create the npmrc to authenticate to npm
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
 
-      # View token
-      - run:
-          name: View token
-          command: cat ~/repo/.npmrc
-
       # Publish Release on NPM after the test
-      #- run:
-        #  name: Publish release on NPM
-          #command: npm publish --loglevel verbose --tag @fluidnext-polymer/paper-input-color@$CIRCLE_TAG --access public
+      - run:
+          name: Publish release on NPM
+          command: npm publish --loglevel verbose --tag @fluidnext-polymer/paper-input-color@$CIRCLE_TAG --access public
 
-#workflows:
- # version: 2
-  #continuous-delivery-workflow:
-   # jobs:
-    #  - test:
-         # filters:
-           # branches:
-           #   ignore: /.*/
-           # tags:
-           #   only: /.*/
-     # - deploy:
-      #    context: deploy
-       #   requires:
-        #    - test
-         # filters:
-          #  branches:
-           #   ignore: /.*/
-            #tags:
-             # only: /.*/
+workflows:
+  version: 2
+  continuous-delivery-workflow:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - deploy:
+          context: deploy
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
