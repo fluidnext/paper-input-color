@@ -1,6 +1,6 @@
 {
     "suites": [
-        "test/paper-input-color_test.html"
+        "test/paper-input-color-test.html"
     ],
     "plugins": {
         "istanbul": {
