@@ -59,3 +59,14 @@ jobs:
             npm run testChrome
 
       - run: echo 'Publish to NPM'
+      
+workflows:
+  version: 2
+  continuous-delivery-workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
