@@ -76,7 +76,7 @@ jobs:
       # Publish Release on NPM after the test
       - run:
           name: Publish release on NPM
-          command: npm publish --tag $CIRCLE_TAG --access public
+          command: npm publish --loglevel verbose --tag @fluidnext-polymer/paper-input-color@$CIRCLE_TAG --access public
 
       # Push Coverage Data
       - run:
