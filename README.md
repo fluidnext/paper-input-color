@@ -1,6 +1,6 @@
-[![npm version](https://badge.fury.io/js/%40fluidnext-polymer%2Fpaper-input-color.svg)](https://badge.fury.io/js/%40fluidnext-polymer%2Fpaper-input-color)
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@fluidnext-polymer/paper-input-color)
-
+[![Coverage Status](https://coveralls.io/repos/github/fluidnext/paper-input-color/badge.svg?branch=master)](https://coveralls.io/github/fluidnext/paper-input-color?branch=master)
+[![Published on NPM](https://img.shields.io/npm/v/%40fluidnext-polymer%2Fpaper-input-color.svg)](https://www.npmjs.com/package/%40fluidnext-polymer%2Fpaper-input-color)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/%40fluidnext-polymer%2Fpaper-input-color)
 
 # Paper Input Color
 
