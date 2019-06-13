@@ -207,6 +207,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
         if (!this.isColor(newValue)) {
             console.warn(`The specified value "${newValue}" does not conform to the required format.  The format is "#rrggbb" where rr, gg, bb are two-digit hexadecimal numbers or 'rgb(r,g,b) where r g and b are 0 - 255 number'`);
+            this.value = null;
             return
         }
 
