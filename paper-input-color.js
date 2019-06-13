@@ -174,8 +174,17 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     ready() {
         super.ready();
-        if (this.value && this.colorType === 'rgb') {
-            this.value = this._convertColor(this.value);
+        if (this.value) {
+            this.value = this._convertHexDecimal(this.colorType, this.value);
+
+            let convert = this.value;
+            switch (true) {
+                case this.isRgbColor(this.value) === true:
+                    convert = this._convertRgb('hex', this.value);
+                    break;
+            }
+
+            this.$.inputColorHidden.setAttribute('value', convert);
         }
     }
 
@@ -215,16 +224,31 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * Function to convert Hex value in rgb
-     * @param {string} color
+     * @param {string} type
+     * @param {string} value
      */
-    _convertColor(color) {
-        /* Check for # infront of the value, if it's there, strip it */
-        if (color.substring(0, 1) !== '#') {
-            return color;
-        }else{
-            return `rgb(${parseInt(color.substring(1, 3), 16)},${parseInt(color.substring(3, 5), 16)},${parseInt(color.substring(5), 16)})`;
+    _convertHexDecimal(type, value) {
+        let convert = value;
+        switch (true) {
+            case type === 'rgb' && this.isHexadecimalColor(value) === true:
+                convert = `rgb(${parseInt(value.substring(1, 3), 16)},${parseInt(value.substring(3, 5), 16)},${parseInt(value.substring(5), 16)})`;
         }
+        return convert;
+    }
+
+    /**
+     * @param {string} type
+     * @param {string} value
+     */
+    _convertRgb(type, value) {
+        let convert = value;
+        switch (true) {
+            case type === 'hex' && this.isRgbColor(value) === true:
+                let content = value.substring(4, value.length -1);
+                let rgbSplice = content.split(',');
+                convert = `#${(new Number(rgbSplice[0])).toString(16)}${(new Number(rgbSplice[1])).toString(16)}${(new Number(rgbSplice[2])).toString(16)}`;
+        }
+        return convert;
     }
 
     /**
@@ -260,7 +284,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @param {Event} evt
      */
     _onChangeInputColorValue(evt){
-        this.value = this.colorType === 'hex' ? evt.target.value : this._convertColor(evt.target.value);
+        this.value = this._convertHexDecimal( evt.target.value, this.colorType);
         this._showElement();
     }
 

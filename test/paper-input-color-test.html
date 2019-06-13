@@ -25,6 +25,12 @@
         </template>
     </test-fixture>
 
+    <test-fixture id="setWrongValue">
+        <template>
+            <paper-input-color value="test" color-type="rgb"></paper-input-color>
+        </template>
+    </test-fixture>
+
     <test-fixture id="changeValue">
         <template>
             <paper-input-color></paper-input-color>
@@ -54,6 +60,12 @@
                 // Value set in attribute
                 assert.equal(element.colorType, 'rgb');
                 assert.equal(element.value, 'rgb(255,255,255)');
+            });
+
+            test('setWrongValue', function () {
+                let element = fixture('setWrongValue');
+                // Value set in attribute
+                assert.equal(element.value, null);
             });
 
             test('changeValue', function () {
