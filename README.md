@@ -4,9 +4,9 @@
 
 # Paper Input Color
 
-Is a [Polymer 3](https://polymer-library.polymer-project.org/3.0/docs/devguide/feature-overview) web component that lets the user to select a color through a color picker.
+Is a [Polymer 3](https://polymer-library.polymer-project.org) web component that lets the user to select a color through a color picker.
 
-See: [Demo](https://www.webcomponents.org/element/paper-input-color/demo/demo/index.html).
+See: [Demo](https://www.webcomponents.org/element/@fluidnext-polymer/paper-input-color/demo/demo/index.html).
 
 ## Usage
 
