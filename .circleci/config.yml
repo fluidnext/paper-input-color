@@ -12,9 +12,10 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      # Checkout project
       - checkout
 
-      #Cazzo é?
+      # TODO controll comment
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -51,6 +52,12 @@ jobs:
           name: Testing a component on Browsers
           command: |
             npm run testChrome
+
+      # Push Coverage Data
+      - run:
+          name: Push coverage data
+          command: |
+            cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
   deploy:
     docker:
         # specify the version you desire here
@@ -59,30 +66,18 @@ jobs:
     working_directory: ~/repo
 
     steps:
-
-      # Install npm
-      - run: npm install
+      # Checkout project
+      - checkout
 
       # Create the npmrc to authenticate to npm
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
 
-      # View token
-      - run:
-          name: View token
-          command: cat ~/repo/.npmrc
-
       # Publish Release on NPM after the test
       - run:
           name: Publish release on NPM
-          command: npm publish --loglevel verbose --tag @fluidnext-polymer/paper-input-color@$CIRCLE_TAG --access public
-
-      # Push Coverage Data
-      - run:
-          name: Push coverage data
-          command: |
-            cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
+          command: npm publish --loglevel verbose --tag latest --access public
 
 workflows:
   version: 2
