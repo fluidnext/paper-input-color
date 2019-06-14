@@ -102,7 +102,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 </iron-input>
                 <input hidden id="inputColorHidden" type="color" on-input="_onChangeInputColorValue">  
                 
-                <iron-icon id="clearButton" slot="suffix" suffix class="hide-element" icon="icons:clear" on-click="_clear"></iron-icon>
+                <iron-icon id="clearButton" slot="suffix" suffix class="hide-element" icon="paper-input-color:clear" on-click="_clear"></iron-icon>
                 <template is="dom-if" if="[[errorMessage]]">
                     <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
                 </template>
@@ -247,6 +247,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 let content = value.substring(4, value.length -1);
                 let rgbSplice = content.split(',');
                 convert = `#${(new Number(rgbSplice[0])).toString(16)}${(new Number(rgbSplice[1])).toString(16)}${(new Number(rgbSplice[2])).toString(16)}`;
+                break;
         }
         return convert;
     }
