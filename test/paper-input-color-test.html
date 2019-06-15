@@ -18,19 +18,25 @@
             <paper-input-color></paper-input-color>
         </template>
     </test-fixture>
-    
+
     <test-fixture id="setValue">
         <template>
             <paper-input-color value="#ffffff" color-type="rgb"></paper-input-color>
         </template>
     </test-fixture>
-    
+
+    <test-fixture id="setWrongValue">
+        <template>
+            <paper-input-color value="test" color-type="rgb"></paper-input-color>
+        </template>
+    </test-fixture>
+
     <test-fixture id="changeValue">
         <template>
             <paper-input-color></paper-input-color>
         </template>
     </test-fixture>
-    
+
     <test-fixture id="clearInput">
         <template>
             <paper-input-color value="#ffffff"></paper-input-color>
@@ -39,25 +45,31 @@
 
     <script>
         suite('testingAttribute', function () {
-            
+
             test('initDefaultValue', function () {
-                var element = fixture('initDefaultValue');
+                let element = fixture('initDefaultValue');
                 //Default Value
                 assert.equal(element.invalid, false); //paper-input attribute
                 assert.equal(element.required, false); //paper-input attribute
                 assert.equal(element.disabled, false); //paper-input attribute
                 assert.equal(element.colorType, 'hex');
             });
-            
+
             test('setValue', function () {
-                var element = fixture('setValue');
+                let element = fixture('setValue');
                 // Value set in attribute
                 assert.equal(element.colorType, 'rgb');
-                assert.equal(element.value, 'rgb(255, 255, 255)');
+                assert.equal(element.value, 'rgb(255,255,255)');
             });
-            
+
+            test('setWrongValue', function () {
+                let element = fixture('setWrongValue');
+                // Value set in attribute
+                assert.equal(element.value, '');
+            });
+
             test('changeValue', function () {
-                var element = fixture('changeValue');
+                let element = fixture('changeValue');
                 let changeEvt = new CustomEvent('change', {
                     detail:{
                         value: '#ff3a1e'
@@ -74,16 +86,95 @@
                 element._onClick();
                 element.$.inputColorHidden.dispatchEvent(changeEvt);
             });
-            
+
             test('clearInput', function () {
-                var element = fixture('clearInput');
+                let element = fixture('clearInput');
                 let clickEvt = new Event('click');
-                
+
                 assert.equal(element.value, '#ffffff');
 
                 element.$.clearButton.dispatchEvent(clickEvt);
 
-                assert.equal(element.value, null)
+                assert.equal(element.value, '')
+            });
+
+            test('isRgbColor', function () {
+                let element = fixture('initDefaultValue');
+
+
+                assert.isFalse(element.isRgbColor('test', "string"));
+                assert.isFalse(element.isRgbColor(5));
+                assert.isFalse(element.isRgbColor(true));
+                assert.isFalse(element.isRgbColor([]));
+                assert.isFalse(element.isRgbColor({}));
+                assert.isTrue(element.isRgbColor('rgb(255,255,255)'));
+                assert.isFalse(element.isRgbColor('rgb(255,255,300)'));
+                assert.isFalse(element.isRgbColor('rgb(255, 54, 25)'));
+                assert.isTrue(element.isRgbColor('rgb(0,0,0)'));
+            });
+
+            test('isHexColor', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.isFalse(element.isHexColor('test', "string"));
+                assert.isFalse(element.isHexColor(5));
+                assert.isFalse(element.isHexColor(true));
+                assert.isFalse(element.isHexColor([]));
+                assert.isFalse(element.isHexColor({}));
+                assert.isTrue(element.isHexColor('#D234C1'));
+                assert.isFalse(element.isHexColor('#FSDFEEE'));
+                assert.isFalse(element.isHexColor('#FSDF'));
+                assert.isFalse(element.isHexColor('#DDD'));
+                assert.isTrue(element.isHexColor('#FFFFFF'));
+            });
+
+            test('isHslColor', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.isFalse(element.isHslColor('test', "string"));
+                assert.isFalse(element.isHslColor(5));
+                assert.isFalse(element.isHslColor(true));
+                assert.isFalse(element.isHslColor([]));
+                assert.isFalse(element.isHslColor({}));
+                assert.isTrue(element.isHslColor('hsl(0,61%,50%)'));
+                assert.isFalse(element.isHslColor('hsl(0,161%,50%)'));
+                assert.isFalse(element.isHslColor('hsl(0, 61%, 50%)'));
+                assert.isTrue(element.isHslColor('hsl(0,0%,0%)'));
+            });
+
+            test('isColor', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.isFalse(element.isColor('test', "string"));
+                assert.isFalse(element.isColor(5));
+                assert.isFalse(element.isColor(true));
+                assert.isFalse(element.isColor([]));
+                assert.isFalse(element.isColor({}));
+                assert.isTrue(element.isColor('#D234C1'));
+                assert.isFalse(element.isColor('#FSDFEEE'));
+                assert.isFalse(element.isColor('#FSDF'));
+                assert.isFalse(element.isColor('#DDD'));
+                assert.isTrue(element.isColor('#FFFFFF'));
+                assert.isTrue(element.isColor('rgb(255,255,255)'));
+                assert.isFalse(element.isColor('rgb(255,255,300)'));
+                assert.isTrue(element.isColor('rgb(0,0,0)'));
+                assert.isTrue(element.isColor('hsl(0,61%,50%)'));
+                assert.isFalse(element.isColor('hsl(0,161%,50%)'));
+                assert.isFalse(element.isColor('hsl(0, 61%, 50%)'));
+                assert.isTrue(element.isColor('hsl(0,0%,0%)'));
+            });
+
+            test('convert', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.equal(element.convertHex('rgb', '#7b867c'), 'rgb(123,134,124)');
+                assert.equal(element.convertHex('hsl', '#7b867c'), 'hsl(125,4%,50%)');
+
+                assert.equal(element.convertRgb('hsl', 'rgb(123,134,124)'), 'hsl(125,4%,50%)');
+                assert.equal(element.convertRgb('hex', 'rgb(123,134,124)'), '#7b867c');
+
+                assert.equal(element.convertHsl('rgb', 'hsl(125,4%,50%)'), 'rgb(122,133,123)');
+                assert.equal(element.convertHsl('hex', 'hsl(125,4%,50%)'), '#7a857b');
             });
         });
     </script>
