@@ -65,7 +65,7 @@
             test('setWrongValue', function () {
                 let element = fixture('setWrongValue');
                 // Value set in attribute
-                assert.equal(element.value, null);
+                assert.equal(element.value, '');
             });
 
             test('changeValue', function () {
@@ -95,11 +95,11 @@
 
                 element.$.clearButton.dispatchEvent(clickEvt);
 
-                assert.equal(element.value, null)
+                assert.equal(element.value, '')
             });
 
             test('isRgbColor', function () {
-                let element = fixture('clearInput');
+                let element = fixture('initDefaultValue');
 
 
                 assert.isFalse(element.isRgbColor('test', "string"));
@@ -113,24 +113,37 @@
                 assert.isTrue(element.isRgbColor('rgb(0,0,0)'));
             });
 
-            test('isHexadecimalColor', function () {
-                let element = fixture('clearInput');
+            test('isHexColor', function () {
+                let element = fixture('initDefaultValue');
 
-                assert.isFalse(element.isHexadecimalColor('test', "string"));
-                assert.isFalse(element.isHexadecimalColor(5));
-                assert.isFalse(element.isHexadecimalColor(true));
-                assert.isFalse(element.isHexadecimalColor([]));
-                assert.isFalse(element.isHexadecimalColor({}));
-                assert.isTrue(element.isHexadecimalColor('#D234C1'));
-                assert.isFalse(element.isHexadecimalColor('#FSDFEEE'));
-                assert.isFalse(element.isHexadecimalColor('#FSDF'));
-                assert.isFalse(element.isHexadecimalColor('#DDD'));
-                assert.isTrue(element.isHexadecimalColor('#FFFFFF'));
+                assert.isFalse(element.isHexColor('test', "string"));
+                assert.isFalse(element.isHexColor(5));
+                assert.isFalse(element.isHexColor(true));
+                assert.isFalse(element.isHexColor([]));
+                assert.isFalse(element.isHexColor({}));
+                assert.isTrue(element.isHexColor('#D234C1'));
+                assert.isFalse(element.isHexColor('#FSDFEEE'));
+                assert.isFalse(element.isHexColor('#FSDF'));
+                assert.isFalse(element.isHexColor('#DDD'));
+                assert.isTrue(element.isHexColor('#FFFFFF'));
             });
 
+            test('isHslColor', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.isFalse(element.isHslColor('test', "string"));
+                assert.isFalse(element.isHslColor(5));
+                assert.isFalse(element.isHslColor(true));
+                assert.isFalse(element.isHslColor([]));
+                assert.isFalse(element.isHslColor({}));
+                assert.isTrue(element.isHslColor('hsl(0,61%,50%)'));
+                assert.isFalse(element.isHslColor('hsl(0,161%,50%)'));
+                assert.isFalse(element.isHslColor('hsl(0, 61%, 50%)'));
+                assert.isTrue(element.isHslColor('hsl(0,0%,0%)'));
+            });
 
             test('isColor', function () {
-                let element = fixture('clearInput');
+                let element = fixture('initDefaultValue');
 
                 assert.isFalse(element.isColor('test', "string"));
                 assert.isFalse(element.isColor(5));
@@ -145,6 +158,23 @@
                 assert.isTrue(element.isColor('rgb(255,255,255)'));
                 assert.isFalse(element.isColor('rgb(255,255,300)'));
                 assert.isTrue(element.isColor('rgb(0,0,0)'));
+                assert.isTrue(element.isColor('hsl(0,61%,50%)'));
+                assert.isFalse(element.isColor('hsl(0,161%,50%)'));
+                assert.isFalse(element.isColor('hsl(0, 61%, 50%)'));
+                assert.isTrue(element.isColor('hsl(0,0%,0%)'));
+            });
+
+            test('convert', function () {
+                let element = fixture('initDefaultValue');
+
+                assert.equal(element.convertHex('rgb', '#7b867c'), 'rgb(123,134,124)');
+                assert.equal(element.convertHex('hsl', '#7b867c'), 'hsl(125,4%,50%)');
+
+                assert.equal(element.convertRgb('hsl', 'rgb(123,134,124)'), 'hsl(125,4%,50%)');
+                assert.equal(element.convertRgb('hex', 'rgb(123,134,124)'), '#7b867c');
+
+                assert.equal(element.convertHsl('rgb', 'hsl(125,4%,50%)'), 'rgb(122,133,123)');
+                assert.equal(element.convertHsl('hex', 'hsl(125,4%,50%)'), '#7a857b');
             });
         });
     </script>

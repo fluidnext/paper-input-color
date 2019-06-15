@@ -92,17 +92,17 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                 }
             </style>
 
-            <paper-input-container>
+            <paper-input-container id="container" no-label-float="[[noLabelFloat]]" always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]" auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
                 <div id="colorPreview"  slot="prefix" on-click="_onClick" prefix></div>
 
-                <label hidden$="[[!label]]" slot="label" aria-hidden="true">[[label]]</label>
+                <label hidden$="[[!label]]" slot="label" for$="[[_inputId]]" aria-hidden="true">[[label]]</label>
                 
-                <iron-input bind-value="{{value}}" invalid="{{invalid}}" slot="input" on-click="_onClick" disabled>
+                <iron-input id="ironInput" id$="[[_inputId]]" slot="input" bind-value="{{value}}" invalid="{{invalid}}" on-click="_onClick" validator="[[validator]]" required="[[required]]" disabled>
                     <input type="text" disabled>
                 </iron-input>
                 <input hidden id="inputColorHidden" type="color" on-input="_onChangeInputColorValue">  
                 
-                <iron-icon id="clearButton" slot="suffix" suffix class="hide-element" icon="paper-input-color:clear" on-click="_clear"></iron-icon>
+                <iron-icon id="clearButton" slot="suffix" suffix icon="paper-input-color:clear" on-click="_clear"></iron-icon>
                 <template is="dom-if" if="[[errorMessage]]">
                     <paper-input-error aria-live="assertive" slot="add-on">[[errorMessage]]</paper-input-error>
                 </template>
@@ -110,16 +110,26 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
         `
     }
 
+    /**
+     * CONSTANTS
+     */
+    static get HSL () { return 'hsl' }
+
+    static get HEX () { return 'hex' }
+
+    static get RGB () { return 'rgb' }
+
     static get properties(){
         return {
 
             /**
              *  `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
-             *  there are two possibility, HEX or RGB
+             *  there are two possibility, hex, rgb or hsl
              */
             colorType: {
                 type: String,
-                value: 'hex'
+                value: PaperInputColor.HEX,
+                observer: '_onChangeColorType'
             },
             /**
              * `value` Value of the element, could be '#ffffff'(hex) or 'rgb(100,100,100)'(rgb)
@@ -127,60 +137,36 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
             value: {
                 type: String,
                 notify: true,
-                value: null,
+                value: '',
                 observer: '_onChangeValue'
-            },
-            /**
-             * `label` Text to display as the input label
-             */
-            label: {
-                type: String
-            },
-            /**
-             * `invalid` Value for the input text
-             */
-            invalid: {
-                type: Boolean,
-                value: false
-            },
-            /**
-             * `disabled` Value for the input text
-             */
-            disabled:{
-                type: Boolean,
-                value: false
-            },
-            /**
-             * `required` Value for the input text
-             */
-            required: {
-                type: Boolean,
-                value:false
-            },
-            /**
-            * `title` Value for the input text
-            */
-            title: {
-                type: String
-            },
-            /**
-            * `name` Value for the input text
-            */
-            name: {
-                type: String
             }
         }
     }
 
     ready() {
         super.ready();
+
         if (this.value) {
-            this.value = this._convertHexDecimal(this.colorType, this.value);
+
+            switch (true) {
+                case this.isHslColor(this.value) === true:
+                    this.value = this.convertHsl(this.colorType, this.value);
+                    break;
+                case this.isRgbColor(this.value) === true:
+                    this.value = this.convertRgb(this.colorType, this.value);
+                    break;
+                case this.isHexColor(this.value) === true:
+                    this.value = this.convertHex(this.colorType, this.value);
+                    break;
+            }
 
             let convert = this.value;
             switch (true) {
                 case this.isRgbColor(this.value) === true:
-                    convert = this._convertRgb('hex', this.value);
+                    convert = this.convertRgb(PaperInputColor.HEX, this.value);
+                    break;
+                case this.isHslColor(this.value) === true:
+                    convert = this.convertHsl(PaperInputColor.HEX, this.value);
                     break;
             }
 
@@ -193,7 +179,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      */
     _clear(event){
         event.stopPropagation();
-        this.value = null;
+        this.value = '';
         this._hideElement();
     }
 
@@ -215,8 +201,11 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
         }
 
         if (!this.isColor(newValue)) {
-            console.warn(`The specified value "${newValue}" does not conform to the required format.  The format is "#rrggbb" where rr, gg, bb are two-digit hexadecimal numbers or 'rgb(r,g,b) where r g and b are 0 - 255 number'`);
-            this.value = null;
+            console.warn(`The specified value "${newValue}" does not conform to the required format.  
+                The format is "#rrggbb" where rr, gg, bb are two-digit hexadecimal numbers or 
+                'rgb(r,g,b) where r g and b are 0 - 255 number' or 
+                'hsl(h,l,s)' where h is degrees and l and s are percentages`);
+            this.value = '';
             return
         }
 
@@ -224,14 +213,46 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
+     * @private
+     * @param newValue
+     */
+    _onChangeColorType(newValue) {
+        if (!newValue) {
+            return;
+        }
+
+        if (newValue !== PaperInputColor.RGB && newValue !== PaperInputColor.HSL && newValue !== PaperInputColor.HEX) {
+            this.colorType = PaperInputColor.HEX;
+            return;
+        }
+
+        switch (true) {
+            case this.isHslColor(this.value) === true:
+                this.value = this.convertHsl(newValue, this.value);
+                break;
+            case this.isRgbColor(this.value) === true:
+                this.value = this.convertRgb(newValue, this.value);
+                break;
+            case this.isHexColor(this.value) === true:
+                this.value = this.convertHex(newValue, this.value);
+                break;
+        }
+    }
+
+    /**
+     * Convert the hex value in the type given
      * @param {string} type
      * @param {string} value
      */
-    _convertHexDecimal(type, value) {
+    convertHex(type, value) {
         let convert = value;
         switch (true) {
-            case type === 'rgb' && this.isHexadecimalColor(value) === true:
-                convert = `rgb(${parseInt(value.substring(1, 3), 16)},${parseInt(value.substring(3, 5), 16)},${parseInt(value.substring(5), 16)})`;
+            case type === PaperInputColor.RGB && this.isHexColor(value) === true:
+                convert = this._rgbTemplateString(this._hexToRgb(value));
+                break;
+            case type === PaperInputColor.HSL && this.isHexColor(value) === true:
+                convert = this._hslTemplateString(this._hexToHls(value));
+                break;
         }
         return convert;
     }
@@ -240,16 +261,214 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @param {string} type
      * @param {string} value
      */
-    _convertRgb(type, value) {
+    convertRgb(type, value) {
         let convert = value;
-        switch (true) {
-            case type === 'hex' && this.isRgbColor(value) === true:
-                let content = value.substring(4, value.length -1);
-                let rgbSplice = content.split(',');
-                convert = `#${(new Number(rgbSplice[0])).toString(16)}${(new Number(rgbSplice[1])).toString(16)}${(new Number(rgbSplice[2])).toString(16)}`;
+        switch (this.isRgbColor(value) === true) {
+            case type === PaperInputColor.HEX:
+                convert = this._hexTemplateString(this._rgbToHex(value));
+                break;
+            case type === PaperInputColor.HSL:
+                convert = this._hslTemplateString(this._rgbToHsl(value));
                 break;
         }
         return convert;
+    }
+
+    /**
+     * @param {string} type
+     * @param {string} value
+     */
+    convertHsl(type, value) {
+        let convert = value;
+        switch (this.isHslColor(value) === true) {
+            case type === PaperInputColor.HEX:
+                convert = this._hexTemplateString(this._hslToHex(value));
+                break;
+            case type === PaperInputColor.RGB:
+                convert = this._rgbTemplateString(this._hslToRgb(value));
+                break;
+        }
+        return convert;
+    }
+
+    /**
+     * @private
+     * @param {object} objectColor
+     * @return {string}
+     */
+    _hslTemplateString(objectColor) {
+        return `${PaperInputColor.HSL}(${objectColor.h},${objectColor.s}%,${objectColor.l}%)`;
+    }
+
+    /**
+     * @private
+     * @param {object} objectColor
+     * @return {string}
+     */
+    _hexTemplateString(objectColor) {
+        return `#${objectColor.r.padStart(2, '0')}${objectColor.g.padStart('2', '0')}${objectColor.b.padStart('2', '0')}`;
+    }
+
+    /**
+     * @private
+     * @param {object} objectColor
+     * @return {string}
+     */
+    _rgbTemplateString(objectColor) {
+        return `${PaperInputColor.RGB}(${objectColor.r},${objectColor.g},${objectColor.b})`;
+    }
+
+    /**
+     * @private
+     * @param {string} value
+     * @return {object}
+     */
+    _hexToRgb(value) {
+
+        if (!this.isHexColor(value)) {
+            return;
+        }
+
+        let rgbObject = {};
+        rgbObject.r = parseInt(value.substring(1, 3), 16);
+        rgbObject.g = parseInt(value.substring(3, 5), 16);
+        rgbObject.b = parseInt(value.substring(5), 16);
+
+        return rgbObject;
+    }
+
+    /**
+     * @private
+     * @param {string} value
+     * @return {object}
+     */
+    _hexToHls(value) {
+
+        if (!this.isHexColor(value)) {
+            return;
+        }
+
+        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+        let r = parseInt(result[1], 16);
+        let g = parseInt(result[2], 16);
+        let b = parseInt(result[3], 16);
+        r /= 255, g /= 255, b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if(max === min) {
+            h = s = 0; // achromatic
+        } else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max){
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        let hslObject = {};
+        hslObject['h']= Math.round(h*360);
+        hslObject['l']= Math.round(l*100);
+        hslObject['s']= Math.round(s*100);
+
+        return hslObject;
+    }
+
+    /**
+     * @param value
+     * @private
+     */
+    _rgbToHex(value) {
+        if (!this.isRgbColor(value)) {
+            return;
+        }
+
+        let content = value.substring(4, value.length -1);
+        let rgbSplice = content.split(',');
+
+        let hexObject = {};
+        hexObject.r = (new Number(rgbSplice[0])).toString(16);
+        hexObject.g = (new Number(rgbSplice[1])).toString(16);
+        hexObject.b = (new Number(rgbSplice[2])).toString(16);
+        return hexObject;
+    }
+
+    /**
+     * @private
+     * @param {string} value
+     * @return {object}
+     */
+    _rgbToHsl(value) {
+
+        if (!this.isRgbColor(value)) {
+            return;
+        }
+
+        let hexObject = this._rgbToHex(value);
+        return this._hexToHls( `#${hexObject.r}${hexObject.g}${hexObject.b}`);
+    }
+
+    /**
+     * @param value
+     * @return {object}
+     * @private
+     */
+    _hslToRgb(value) {
+
+        if (!this.isHslColor(value)) {
+            return;
+        }
+
+        let hslArray = value.substring(4, value.length-1).split(',');
+        let h = parseInt(hslArray[0], 10);
+        let s = parseInt(hslArray[1].replace('%', ''), 10);
+        let l = parseInt(hslArray[2].replace('%', ''), 10);
+        h /= 360;
+        s /= 100;
+        l /= 100;
+        let r, g, b;
+
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            const hueToRgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hueToRgb(p, q, h + 1 / 3);
+            g = hueToRgb(p, q, h);
+            b = hueToRgb(p, q, h - 1 / 3);
+        }
+
+        let rgbObject = {};
+        rgbObject['r'] = Math.round(r * 255);
+        rgbObject['g'] = Math.round(g * 255);
+        rgbObject['b'] = Math.round(b * 255);
+
+        return rgbObject;
+    }
+
+    /**
+     * @param value
+     * @private
+     */
+    _hslToHex(value) {
+
+        if (!this.isHslColor(value)) {
+            return;
+        }
+
+        let rgbObject = this._hslToRgb(value);
+        return this._rgbToHex(`${PaperInputColor.RGB}(${rgbObject.r},${rgbObject.g},${rgbObject.b})`);
     }
 
     /**
@@ -258,7 +477,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @return {boolean}
      */
     isColor(value) {
-        return this.isRgbColor(value) || this.isHexadecimalColor(value);
+        return this.isRgbColor(value) || this.isHexColor(value)  || this.isHslColor(value);
     }
 
     /**
@@ -272,11 +491,21 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
+     * Check if the value is a valid hsl formatted string
+     * @param {string} value
+     * @return {boolean}
+     */
+    isHslColor(value) {
+        const regex = /^hsl\((0|360|35\d|3[0-4]\d|[12]\d\d|0?\d?\d),(0|100|\d{1,2})%,(0|100|\d{1,2})%\)$/gm;
+        return !!regex.exec(value);
+    }
+
+    /**
      * Check if the value is a valid hexadecimal formatted string
      * @param {string} value
      * @return {boolean}
      */
-    isHexadecimalColor(value) {
+    isHexColor(value) {
         const regex = /^#?([A-F\d]{6}|[a-f\d]{6})$/gm;
         return !!regex.exec(value);
     }
@@ -285,7 +514,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * @param {Event} evt
      */
     _onChangeInputColorValue(evt){
-        this.value = this._convertHexDecimal( evt.target.value, this.colorType);
+        this.value = this.convertHex(this.colorType, evt.target.value);
         this._showElement();
     }
 

@@ -6,48 +6,112 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>Paper Input Color</title>
-
+    <script src="../node_modules/web-animations-js/web-animations-next.min.js"></script>
     <script type="module">
         import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
         import '@polymer/iron-demo-helpers/demo-snippet.js';
+        import '@polymer/paper-button/paper-button';
+        import '@polymer/paper-dropdown-menu/paper-dropdown-menu';
+        import '@polymer/paper-listbox/paper-listbox';
+        import '@polymer/paper-item/paper-item';
         import '../icons/paper-input-file-icons';
         import '../paper-input-color.js';
+        // TODO remove
+        import '@polymer/paper-input/paper-input';
     </script>
     <custom-style>
         <style is="custom-style" include="demo-pages-shared-styles">
             body {
                 font-family: roboto;
             }
+
+            .container {
+                display: flex;
+                flex-direction: row;
+            }
+
+            paper-button {
+                background-color: green;
+            }
+
+            .button-validation {
+                padding-top: 10px;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            paper-input-color {
+                width: 100%;
+            }
+
+            .container paper-input-color {
+                padding-left: 8px;
+                flex-basis: 90%;
+            }
+
+            .container paper-dropdown-menu {
+                padding-left: 8px;
+                flex-basis: 10%;
+            }
         </style>
     </custom-style>
 </head>
 
 <body>
-    <style></style>
     <div class="vertical-section-container centered">
-        <h3>Paper Input Color</h3>
+        <h3>Inputs can have different type of rappresentaion</h3>
         <demo-snippet>
-            <paper-input-color label="Select Color..."></paper-input-color>
+            <template>
+                <dom-bind id="objectInputDemo">
+                    <template>
+                        <div class="container">
+                            <paper-input-color label="Select Color" color-type="{{type}}"></paper-input-color>
+                            <paper-dropdown-menu label="Type" value="{{type}}">
+                                <paper-listbox slot="dropdown-content" selected="1">
+                                    <paper-item>hex</paper-item>
+                                    <paper-item>rgb</paper-item>
+                                    <paper-item>hsl</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                        </div>
+                    </template>
+                </dom-bind>
+            </template>
         </demo-snippet>
     </div>
     <div class="vertical-section-container centered">
-        <h3>Paper Input Color in RGB</h3>
+        <h3>The label can have different floating states</h3>
         <demo-snippet>
-            <paper-input-color label="Select Color..." color-type="rgb"></paper-input-color>
+            <template>
+                <paper-input-color label="This label is always floating" color-type="{{type}}" always-float-label></paper-input-color>
+                <paper-input-color label="This label never floats" color-type="{{type}}" no-label-float></paper-input-color>
+            </template>
         </demo-snippet>
     </div>
     <div class="vertical-section-container centered">
-        <h3>Paper Input Color, with default value</h3>
+        <h3>Paper Input Color disable</h3>
         <demo-snippet>
-            <paper-input-color label="Select Color..." value="#523bdb"></paper-input-color>
+            <template>
+                <paper-input-color label="Select Color" color-type="rgb" value="#c73d7b" disabled></paper-input-color>
+            </template>
         </demo-snippet>
     </div>
     <div class="vertical-section-container centered">
-        <h3>Paper Input Color, with default value in HEX and color-type set to RGB</h3>
+        <h3>Paper Input Color error</h3>
         <demo-snippet>
-            <paper-input-color label="Select Color..." color-type="rgb" value="rgb(255,54,255)"></paper-input-color>
+            <template>
+                <paper-input-color label="Select Color" color-type="rgb" required auto-validate error-message="needs some color!"></paper-input-color>
+                <paper-input-color id="inputForValidation" required label="this input is manually validated" error-message="letters only!"></paper-input-color>
+                <div class="button-validation">
+                    <paper-button onclick="validate()">Validate!</paper-button>
+                </div>
+                <script>
+                    function validate() {
+                        document.getElementById('inputForValidation').validate();
+                    }
+                </script>
+            </template>
         </demo-snippet>
     </div>
 </body>
-
 </html>
