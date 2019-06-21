@@ -19,15 +19,33 @@
         </template>
     </test-fixture>
 
-    <test-fixture id="setValue">
+    <test-fixture id="setValueRgb">
         <template>
-            <paper-input-color value="#ffffff" color-type="rgb"></paper-input-color>
+            <paper-input-color value="hsl(211,74%,50%)" color-type="rgb"></paper-input-color>
+        </template>
+    </test-fixture>
+    
+    <test-fixture id="setValueHex">
+        <template>
+            <paper-input-color value="rgb(255,255,255)" color-type="hex"></paper-input-color>
+        </template>
+    </test-fixture>
+    
+    <test-fixture id="setValueHsl">
+        <template>
+            <paper-input-color value="#dcc755" color-type="hsl"></paper-input-color>
         </template>
     </test-fixture>
 
     <test-fixture id="setWrongValue">
         <template>
             <paper-input-color value="test" color-type="rgb"></paper-input-color>
+        </template>
+    </test-fixture>
+    
+    <test-fixture id="setWrongColorType">
+        <template>
+            <paper-input-color value="rgb(255,255,255)" color-type="rdb"></paper-input-color>
         </template>
     </test-fixture>
 
@@ -55,13 +73,35 @@
                 assert.equal(element.colorType, 'hex');
             });
 
-            test('setValue', function () {
-                let element = fixture('setValue');
+            test('setValueRgb', function () {
+                let element = fixture('setValueRgb');
                 // Value set in attribute
                 assert.equal(element.colorType, 'rgb');
-                assert.equal(element.value, 'rgb(255,255,255)');
+                assert.equal(element.value, 'rgb(33,124,222)');
+            });
+            
+            test('setValueHex', function () {
+                let element = fixture('setValueHex');
+                // Value set in attribute
+                assert.equal(element.colorType, 'hex');
+                assert.equal(element.value, '#ffffff');
+            });
+            
+            test('setValueHsl', function () {
+                let element = fixture('setValueHsl');
+                // Value set in attribute
+                console.warn(element.colorType);
+                assert.equal(element.colorType, 'hsl');
+                assert.equal(element.value, 'hsl(51,66%,60%)');
             });
 
+            test('setWrongColorType', function () {
+                let element = fixture('setWrongColorType');
+                // Value set in attribute
+                assert.equal(element.colorType, 'hex');
+                assert.equal(element.value, '#ffffff');
+            });
+            
             test('setWrongValue', function () {
                 let element = fixture('setWrongValue');
                 // Value set in attribute
