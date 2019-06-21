@@ -49,9 +49,6 @@
   },
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
-    "@polymer/iron-icon": "^3.0.0",
-    "@polymer/iron-icons": "^3.0.0",
-    "@polymer/paper-input": "^3.0.2",
     "@polymer/paper-icon-button": "^3.0.2"
   },
   "contributors": [
