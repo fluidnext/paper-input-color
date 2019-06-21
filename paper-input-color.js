@@ -4,8 +4,6 @@ import { PaperInputBehavior } from '@polymer/paper-input/paper-input-behavior';
 import { IronFormElementBehavior } from '@polymer/iron-form-element-behavior/iron-form-element-behavior';
 
 import '@polymer/paper-input/paper-input-container';
-import '@polymer/iron-icon/iron-icon';
-import '@polymer/iron-icons/iron-icons';
 import '@polymer/iron-input/iron-input';
 import '@polymer/paper-input/paper-input-error';
 
