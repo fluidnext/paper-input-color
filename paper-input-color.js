@@ -157,7 +157,6 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                     this.value = this.convertHex(this.colorType, this.value);
                     break;
             }
-
             let convert = this.value;
             switch (true) {
                 case this.isRgbColor(this.value) === true:
@@ -167,7 +166,6 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
                     convert = this.convertHsl(PaperInputColor.HEX, this.value);
                     break;
             }
-
             this.$.inputColorHidden.setAttribute('value', convert);
         }
     }
