@@ -1,8 +1,9 @@
 {
   "name": "@fluidnext-polymer/paper-input-color",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Paper Input Color",
   "scripts": {
+    "analyze": "polymer analyze -i paper-input-color.js > analysis.json",
     "test": "polymer test",
     "test-safari": "polymer test -l safari",
     "test-chrome": "polymer test -l chrome",
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/fluidnext/paper-input-color#readme",
   "main": "paper-input-color.js",
   "devDependencies": {
+    "@polymer/iron-component-page": "^3.0.0-pre.20",
     "@polymer/iron-demo-helpers": "^3.1.0",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-dropdown-menu": "^3.0.1",

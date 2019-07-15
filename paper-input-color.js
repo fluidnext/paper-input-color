@@ -7,6 +7,9 @@ import '@polymer/paper-input/paper-input-container';
 import '@polymer/iron-input/iron-input';
 import '@polymer/paper-input/paper-input-error';
 
+/**
+ * @demo demo/index.html Paper-Input-Color
+ */
 class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElementBehavior], PolymerElement) {
     static get template(){
         return html`
@@ -121,8 +124,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
         return {
 
             /**
-             *  `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
-             *  there are two possibility, hex, rgb or hsl
+             * `colorType` Set what you see on the input value, default value is HEX for hexadecimal, so you see '#ffffff'.
+             * there are two possibility, hex, rgb or hsl
+             * @type {String}
              */
             colorType: {
                 type: String,
@@ -131,6 +135,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
             },
             /**
              * `value` Value of the element, could be '#ffffff'(hex) or 'rgb(100,100,100)'(rgb)
+             * @type {String}
              */
             value: {
                 type: String,
@@ -172,6 +177,8 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Used for set string color at `null` to show transparent color
+     * @param {MouseEvent} event
+     * @private
      */
     _clear(event){
         event.stopPropagation();
@@ -181,13 +188,14 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Used to bind click from paper-input to hidden input
+     * @private
      */
     _onClick(){
         this.$.inputColorHidden.click();
     }
 
     /**
-     * @param newValue
+     * @param {String} newValue
      * @private
      */
     _onChangeValue(newValue){
@@ -209,8 +217,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
+     * 
+     * @param {String} newValue
      * @private
-     * @param newValue
      */
     _onChangeColorType(newValue) {
         if (!newValue) {
@@ -239,6 +248,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
      * Convert the hex value in the type given
      * @param {string} type
      * @param {string} value
+     * @public
      */
     convertHex(type, value) {
         let convert = value;
@@ -256,6 +266,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     /**
      * @param {string} type
      * @param {string} value
+     * @public
      */
     convertRgb(type, value) {
         let convert = value;
@@ -273,6 +284,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     /**
      * @param {string} type
      * @param {string} value
+     * @public
      */
     convertHsl(type, value) {
         let convert = value;
@@ -288,36 +300,40 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * @private
+     * 
      * @param {object} objectColor
      * @return {string}
+     * @private
      */
     _hslTemplateString(objectColor) {
         return `${PaperInputColor.HSL}(${objectColor.h},${objectColor.s}%,${objectColor.l}%)`;
     }
 
     /**
-     * @private
+     * 
      * @param {object} objectColor
      * @return {string}
+     * @private
      */
     _hexTemplateString(objectColor) {
         return `#${objectColor.r.padStart(2, '0')}${objectColor.g.padStart('2', '0')}${objectColor.b.padStart('2', '0')}`;
     }
 
     /**
-     * @private
+     * 
      * @param {object} objectColor
      * @return {string}
+     * @private
      */
     _rgbTemplateString(objectColor) {
         return `${PaperInputColor.RGB}(${objectColor.r},${objectColor.g},${objectColor.b})`;
     }
 
     /**
-     * @private
+     * 
      * @param {string} value
      * @return {object}
+     * @private
      */
     _hexToRgb(value) {
 
@@ -374,7 +390,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * @param value
+     * @param {String} value
      * @private
      */
     _rgbToHex(value) {
@@ -408,7 +424,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * @param value
+     * @param {String} value
      * @return {object}
      * @private
      */
@@ -454,7 +470,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     * @param value
+     * @param {String} value
      * @private
      */
     _hslToHex(value) {
@@ -469,8 +485,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Check if the value is a valid formatted string
-     * @param value
+     * @param {String} value
      * @return {boolean}
+     * @public
      */
     isColor(value) {
         return this.isRgbColor(value) || this.isHexColor(value)  || this.isHslColor(value);
@@ -478,8 +495,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Check if the value is a valid rgb formatted string
-     * @param {string} value
+     * @param {String} value
      * @return {boolean}
+     * @public
      */
     isRgbColor(value) {
         const regex = /^rgb\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)\)$/gm;
@@ -488,8 +506,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Check if the value is a valid hsl formatted string
-     * @param {string} value
+     * @param {String} value
      * @return {boolean}
+     * @public
      */
     isHslColor(value) {
         const regex = /^hsl\((0|360|35\d|3[0-4]\d|[12]\d\d|0?\d?\d),(0|100|\d{1,2})%,(0|100|\d{1,2})%\)$/gm;
@@ -498,8 +517,9 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * Check if the value is a valid hexadecimal formatted string
-     * @param {string} value
+     * @param {String} value
      * @return {boolean}
+     * @public
      */
     isHexColor(value) {
         const regex = /^#?([A-F\d]{6}|[a-f\d]{6})$/gm;
@@ -508,6 +528,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
 
     /**
      * @param {Event} evt
+     * @private
      */
     _onChangeInputColorValue(evt){
         this.value = this.convertHex(this.colorType, evt.target.value);
@@ -515,7 +536,7 @@ class PaperInputColor extends mixinBehaviors([PaperInputBehavior, IronFormElemen
     }
 
     /**
-     *
+     * @private
      */
     _showElement(){
         this.$.clearButton.removeAttribute('hidden');
